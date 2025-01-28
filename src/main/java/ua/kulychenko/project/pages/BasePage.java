@@ -1,11 +1,13 @@
 package ua.kulychenko.project.pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 public class BasePage {
     protected WebDriver driver;
@@ -14,13 +16,25 @@ public class BasePage {
         this.driver = driver;
     }
 
+    // Ожидание, пока элемент станет кликабельным
+    protected WebElement waitForElementToBeClickable(WebElement element, int timeoutInSeconds) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeoutInSeconds));
+        return wait.until(ExpectedConditions.elementToBeClickable(element));
+    }
+
     // Ожидание появления элемента
     protected WebElement waitForElementToBeVisible(WebElement element, int timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeoutInSeconds));
         return wait.until(ExpectedConditions.visibilityOf(element));
     }
 
-    //Для ожидания загрузки страницы с определенным заголовком
+    // Ожидание появления списка элементов
+    protected List<WebElement> waitForElementsToBeVisible(By locator, int timeoutInSeconds) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeoutInSeconds));
+        return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(locator));
+    }
+
+    // Для ожидания загрузки страницы с определенным заголовком
     public void waitForPageTitle(String expectedTitle, int timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeoutInSeconds));
         wait.until(ExpectedConditions.titleIs(expectedTitle));
@@ -42,12 +56,12 @@ public class BasePage {
         element.sendKeys(text);
     }
 
-    //Сделать браузер во весь экран
+    // Сделать браузер во весь экран
     public void maximizeWindow() {
         driver.manage().window().maximize();
     }
 
-    //Закрыть текущую вкладку браузера
+    // Закрыть текущую вкладку браузера
     public void closeCurrentTab() {
         driver.close();
     }

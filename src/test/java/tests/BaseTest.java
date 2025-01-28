@@ -12,12 +12,13 @@ import java.time.Duration;
 public class BaseTest {
     protected WebDriver driver;
 
+
     @BeforeMethod
     public void setUp() {
         // Настройка WebDriverManager
         WebDriverManager.chromedriver().setup();
 
-        // Настройка ChromeOptions для отключения прокси
+        // Настройка ChromeOptions для отключения прокси и т.д.
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--no-proxy-server");
         options.addArguments("--proxy-server='direct://'");
@@ -33,7 +34,7 @@ public class BaseTest {
         // Установка времени ожидания загрузки страницы
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(60));
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        driver.manage().window().maximize();
+        //driver.manage().window().maximize();
     }
 
     @AfterMethod

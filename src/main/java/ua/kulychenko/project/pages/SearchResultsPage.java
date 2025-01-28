@@ -13,83 +13,183 @@ import java.util.Set;
 
 public class SearchResultsPage extends BasePage {
 
-    // Локатор для списка видео
-    @FindBy(css = "ytd-video-renderer")
-    private List<WebElement> videoResults;
+    // Локатор для выпадающего списка предложений
+    //private final By suggestionBoxLocator = By.xpath("//*[@id='center']/yt-searchbox/div[2]");
+    private final By searchSuggestionsLocator = By.xpath("//div[@role='listbox' and @class='ytSearchboxComponentSuggestionsContainer' and @style='min-width: 536px; margin-left: 0px;']");
 
-    // Конструктор
+
+    // Локатор для всех элементов в списке предложений
+    private final By suggestionItemsLocator = By.cssSelector(".ytSuggestionComponentSuggestion");
+
+    // Локатор для списка видео результатов
+    private final By videoResultsLocator = By.cssSelector("ytd-video-renderer");
+
     public SearchResultsPage(WebDriver driver) {
         super(driver);
-        PageFactory.initElements(driver, this);
     }
 
     /**
-     * Метод для открытия второго видео сверху в новой вкладке (без переключения на неё).
+     * Выбор второй позиции в выпадающем списке предложений.
      */
-    public void openSecondResultInNewTab() {
-        // Ожидание появления списка видео
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.visibilityOfAllElements(videoResults));
+//    public void selectSecondSuggestion() {
+//        // Ожидание появления выпадающего списка
+//        WebElement suggestionBox = waitForElementToBeVisible(driver.findElement(suggestionBoxLocator), 10);
+//
+//        // Получаем все элементы в списке
+//        List<WebElement> suggestionItems = suggestionBox.findElements(suggestionItemsLocator);
+//
+//        // Проверяем, что есть хотя бы две позиции
+//        if (suggestionItems.size() >= 2) {
+//            WebElement secondSuggestion = suggestionItems.get(1);
+//
+//            // Скроллим к элементу
+//            //((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", secondSuggestion);
+//
+//            // Кликаем по элементу
+//            clickElement(secondSuggestion, 10);
+//            System.out.println("Выбрана вторая позиция в списке предложений.");
+//        } else {
+//            throw new RuntimeException("Недостаточно элементов в списке предложений для выбора второй позиции.");
+//        }
+//    }
 
-        // Проверка, что есть как минимум два видео
-        if (videoResults.size() >= 2) {
-            WebElement secondVideo = videoResults.get(1);
-
-            // Скроллим к элементу, чтобы он стал видимым
-            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", secondVideo);
-
-            // Ожидание, что элемент станет кликабельным
-            wait.until(ExpectedConditions.elementToBeClickable(secondVideo));
-
-            // Открываем второе видео в новой вкладке (Ctrl + Click)
-            Actions actions = new Actions(driver);
-            actions.keyDown(Keys.CONTROL)
-                    .click(secondVideo)
-                    .keyUp(Keys.CONTROL)
-                    .perform();
-
-            System.out.println("Второе видео открыто в новой вкладке.");
-        } else {
-            throw new RuntimeException("Недостаточно видео на странице для выбора второго.");
-        }
-    }
+//    /**
+// * Метод для выбора второй подсказки из выпадающего списка.
+// */
+//public void selectSecondSuggestion() {
+//    // Ожидание появления выпадающего списка с подсказками
+////    List<WebElement> suggestions = new WebDriverWait(driver, Duration.ofSeconds(10000))
+////            .until(ExpectedConditions.presenceOfAllElementsLocatedBy(searchSuggestionsLocator));
+//    List<WebElement> suggestions = waitForElementsToBeVisible(suggestionItemsLocator, 10);
+//
+//    // Проверка, что есть как минимум две подсказки
+//    if (suggestions.size() >= 2) {
+//        WebElement secondSuggestion = suggestions.get(1);
+//
+//        // Клик по второй подсказке
+//        clickElement(secondSuggestion, 10);
+//
+//        System.out.println("Кликнули по второй подсказке в списке.");
+//    } else {
+//        throw new RuntimeException("Недостаточно подсказок в списке для выбора второй позиции.");
+//    }
+//}
 
     /**
      * Метод для воспроизведения четвёртого видео сверху.
      */
+//    public VideoPage playFourthVideo() {
+//        // Ожидание появления списка видео
+//        List<WebElement> videoResults = waitForElementsToBeVisible(videoResultsLocator, 10);
+//
+//        // Проверяем, что есть как минимум четыре видео
+//        if (videoResults.size() >= 4) {
+//            WebElement fourthVideo = videoResults.get(3);
+//
+//            // Скроллим к четвёртому видео
+//            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", fourthVideo);
+//
+//            // Ожидаем, что элемент станет кликабельным, и кликаем
+//            clickElement(fourthVideo, 10);
+//            //((JavascriptExecutor) driver).executeScript("arguments[0].click();", fourthVideo);
+//
+//            System.out.println("Четвёртое видео успешно запущено.");
+//            return new VideoPage(driver);
+//        } else {
+//            throw new RuntimeException("Недостаточно видео на странице для выбора четвёртого.");
+//        }
+//    }
+//    public VideoPage playFourthVideo() {
+//        // Ожидание появления списка видео
+//        List<WebElement> videoResults = waitForElementsToBeVisible(videoResultsLocator, 10);
+//
+//        // Проверяем, что есть как минимум четыре видео
+//        if (videoResults.size() >= 4) {
+//            WebElement fourthVideo = videoResults.get(3);
+//
+//            // Скроллим к четвёртому видео
+//            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", fourthVideo);
+//
+//            // Убедимся, что элемент не перекрыт всплывающими окнами
+//            try {
+//                waitForElementToBeClickable(fourthVideo, 10); // Убедимся, что видео кликабельно
+//            } catch (TimeoutException e) {
+//                System.out.println("Элемент не стал кликабельным. Проверяем возможные перекрытия...");
+//
+//                // Проверяем наличие блокирующего элемента
+//                WebElement blockingElement = driver.findElement(By.tagName("ytd-video-preview"));
+//                if (blockingElement.isDisplayed()) {
+//                    System.out.println("Блокирующий элемент найден. Пытаемся его закрыть.");
+//                    ((JavascriptExecutor) driver).executeScript("arguments[0].style.display='none';", blockingElement);
+//                }
+//            }
+//
+//            // Кликаем по видео
+//            clickElement(fourthVideo, 10);
+//
+//            System.out.println("Четвёртое видео успешно запущено.");
+//            return new VideoPage(driver);
+//        } else {
+//            throw new RuntimeException("Недостаточно видео на странице для выбора четвёртого.");
+//        }
+//    }
+
+//    public VideoPage playFourthVideo() {
+//        // Ожидание появления списка видео
+//        List<WebElement> videoResults = waitForElementsToBeVisible(videoResultsLocator, 10);
+//
+//        // Проверяем, что есть как минимум четыре видео
+//        if (videoResults.size() >= 4) {
+//            WebElement fourthVideo = videoResults.get(3);
+//
+//            // Скроллим к четвёртому видео
+//            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", fourthVideo);
+//
+//            // Ждём, пока видео станет кликабельным
+//            WebElement clickableVideo = waitForElementToBeClickable(fourthVideo, 10);
+//
+//            // Кликаем по видео
+//            clickableVideo.click();
+//
+//            System.out.println("Четвёртое видео успешно запущено.");
+//            return new VideoPage(driver);
+//        } else {
+//            throw new RuntimeException("Недостаточно видео на странице для выбора четвёртого.");
+//        }
+//    }
     public VideoPage playFourthVideo() {
         // Ожидание появления списка видео
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.visibilityOfAllElements(videoResults));
+        List<WebElement> videoResults = waitForElementsToBeVisible(videoResultsLocator, 10);
 
-        // Проверка, что есть как минимум четыре видео
+        // Проверяем, что есть как минимум четыре видео
         if (videoResults.size() >= 4) {
             WebElement fourthVideo = videoResults.get(3);
 
             // Скроллим к четвёртому видео
             ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", fourthVideo);
 
-            // Ожидание, что элемент станет кликабельным
-            wait.until(ExpectedConditions.elementToBeClickable(fourthVideo));
+            // Ждём, пока видео станет кликабельным
+            WebElement clickableVideo = waitForElementToBeClickable(fourthVideo, 10);
 
-            try {
-                // Клик по четвёртому видео
-                fourthVideo.click();
-            } catch (ElementClickInterceptedException e) {
-                // Если клик не удался, пробуем выполнить клик через JS
-                System.out.println("Элемент перекрыт. Пробуем выполнить клик через JavaScript.");
-                ((JavascriptExecutor) driver).executeScript("arguments[0].click();", fourthVideo);
+            // Кликаем по видео
+            clickableVideo.click();
+
+            // Для проверки что видео действительно запустилось, проверяем что URL изменится на тот, который содержит "watch"
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            boolean isVideoPlaying = wait.until(ExpectedConditions.urlContains("watch"));
+
+            if (isVideoPlaying) {
+                System.out.println("Четвёртое видео успешно запущено.");
+                return new VideoPage(driver);
+            } else {
+                throw new RuntimeException("Не удалось запустить четвёртое видео. URL не изменился на 'watch'.");
             }
-
-            // Ожидание, что URL изменится и будет содержать "watch"
-            wait.until(ExpectedConditions.urlContains("watch"));
-
-            System.out.println("Четвёртое видео успешно запущено.");
-            return new VideoPage(driver);
         } else {
             throw new RuntimeException("Недостаточно видео на странице для выбора четвёртого.");
         }
     }
 }
+
+
 
 
